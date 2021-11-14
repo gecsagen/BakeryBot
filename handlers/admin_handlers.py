@@ -5,6 +5,7 @@ from keyboards.admin_keyboards import kb_admin, kb_category
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
+from loader import bot
 
 
 class FSMProduct(StatesGroup):
@@ -41,10 +42,23 @@ async def add_new_product(message: types.Message):
         await message.reply('Выберите пожалуйста категорию:', reply_markup=kb_category)
 
 
-async def callback_add_new_product(callback_query: types.CallbackQuery):
+async def callback_add_new_product(callback_query: types.CallbackQuery, state: FSMContext):
     """Функция для выяснения в какую категорию вносить изменения"""
     global category
     category = callback_query.data
+    async with state.proxy() as data:
+        data['category'] = category
+    await FSMProduct.next()
+    await bot.reply('Теперь отправьте фото')
+
+
+async def load_photo(message: types.Message, state: FSMContext):
+    """Ловит фото пиццы и пишет ссылку на фото в словарь"""
+    if str(message.from_user.id) in admins:
+        async with state.proxy() as data:
+            data['photo'] = message.photo[0].file_id
+        await FSMProduct.next()
+        await message.reply('Теперь введите название')
 
 
 def register_handlers_admin(dp: Dispatcher):
@@ -53,6 +67,7 @@ def register_handlers_admin(dp: Dispatcher):
     """
     dp.register_message_handler(cm_start, commands=['админ'])
     dp.register_message_handler(cancel_handler, state='*', commands='отмена')
-    dp.register_message_handler(add_new_product, Text(startswith=['Добавить продукт']))
+    dp.register_message_handler(add_new_product, Text(startswith=['Добавить продукт']), state=None)
     dp.register_callback_query_handler(callback_add_new_product,
                                        lambda x: x.data == 'bread' or x.data == 'buns' or x.data == 'other')
+    dp.register_message_handler(load_photo, content_types=['photo'], state=FSMProduct.photo)
