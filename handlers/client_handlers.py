@@ -12,13 +12,15 @@ async def commands_start(message: types.Message):
 
 async def load_address(message: types.Message):
     """Хендлер для отображения адреса пекарни"""
-    await message.reply('Омская обл, Знаменский Р-н, с.Завьялово, ул.Комарова 25')
-    await message.answer_location(57.148317, 73.436807)
+    await message.reply('Омская обл, Знаменский Р-н, с.Завьялово, ул.Комарова 27')
+    await message.answer_location(57.145900, 73.441299)
 
 
 async def load_contacts(message: types.Message):
     """Хендлер для отображения контактов пекарни"""
     await message.answer_contact(phone_number='79236976982', first_name='Роман')
+    await message.answer_contact(phone_number='79236976983', first_name='Иван')
+    await message.answer('ouremail@gmail.com')
 
 
 def register_handlers_client(dp: Dispatcher):
