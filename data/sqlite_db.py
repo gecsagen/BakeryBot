@@ -94,3 +94,9 @@ async def sql_delete_buns(data):
     """Удаление булочки из БД"""
     cur.execute('DELETE FROM buns WHERE name == ?', (data,))
     base.commit()
+
+
+async def sql_delete_other(data):
+    """Удаление элемента из категории 'прочее' из БД"""
+    cur.execute('DELETE FROM other WHERE name == ?', (data,))
+    base.commit()
