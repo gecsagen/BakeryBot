@@ -81,4 +81,10 @@ async def sql_loads_all_gallery():
 
 async def sql_loads_last_timetable():
     """Возвращает актуальное расписание из бд"""
-    return cur.execute('SELECT * FROM gallery').fetchall()
+    return cur.execute('SELECT * FROM timetable').fetchall()[-1]
+
+
+async def sql_delete_bread(data):
+    """Удаление хлеба из БД"""
+    cur.execute('DELETE FROM bread WHERE name == ?', (data,))
+    base.commit()
