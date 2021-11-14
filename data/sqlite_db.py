@@ -22,3 +22,10 @@ def sql_start():
     base.execute('CREATE TABLE IF NOT EXISTS timetable(img TEXT)')
     #  сохраняем изменения
     base.commit()
+
+
+async def sql_add_product_in_bread(state):
+    """Функция добавления новой продукта в категорию 'Хлеб'"""
+    async with state.proxy() as data:
+        cur.execute('INSERT INTO bread VALUES (?, ?, ?, ?)', tuple(data.values()))
+        base.commit()
