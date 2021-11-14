@@ -48,5 +48,12 @@ async def sql_add_product_in_other(state):
 async def sql_add_new_item_in_gallery(state):
     """Функция добавления новой картинки в галерею"""
     async with state.proxy() as data:
-        cur.execute('INSERT INTO other VALUES (?, ?)', tuple(data.values()))
+        cur.execute('INSERT INTO gallery VALUES (?, ?)', tuple(data.values()))
+        base.commit()
+
+
+async def sql_add_new_item_in_timetable(state):
+    """Функция добавления нового расписания"""
+    async with state.proxy() as data:
+        cur.execute('INSERT INTO timetable VALUES (?,)', tuple(data.values()))
         base.commit()
