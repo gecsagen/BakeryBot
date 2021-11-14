@@ -1,7 +1,7 @@
 import logging
 from loader import dp
 from aiogram.utils import executor
-from handlers import client_handlers
+from handlers import client_handlers, admin_handlers
 
 # настройка логирования бота
 logging.basicConfig(level=logging.DEBUG)
@@ -14,7 +14,7 @@ async def on_startup(_):
 
 #  запускаем функции регистрации хендлеров
 client_handlers.register_handlers_client(dp)
-# client_handlers.register_handlers_admin(dp)
+admin_handlers.register_handlers_admin(dp)
 
 #  запуск бота в режиме polling
 if __name__ == '__main__':

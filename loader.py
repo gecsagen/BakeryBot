@@ -13,5 +13,8 @@ storage = MemoryStorage()
 #  создаем бот, считав ключ API из переменного окружения
 bot = Bot(token=os.getenv('TOKEN'))
 
+#  получаем список админов из переменного окружения
+admins = os.getenv('ADMINS').split(',')
+
 #  создаем дистпетчер
 dp = Dispatcher(bot, storage=storage)
