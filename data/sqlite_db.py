@@ -88,3 +88,9 @@ async def sql_delete_bread(data):
     """Удаление хлеба из БД"""
     cur.execute('DELETE FROM bread WHERE name == ?', (data,))
     base.commit()
+
+
+async def sql_delete_buns(data):
+    """Удаление булочки из БД"""
+    cur.execute('DELETE FROM buns WHERE name == ?', (data,))
+    base.commit()
