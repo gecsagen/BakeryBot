@@ -1,5 +1,6 @@
 """Админские клавиатуры"""
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 #  создаем кнопки
 button_add_product = KeyboardButton('Добавить продукт🍞')
@@ -13,3 +14,7 @@ kb_admin = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
 #  добавляем кнопки на клавиатуру в строку
 kb_admin.row(button_add_product, button_del_product).row(button_add_gallery, button_del_gallery) \
     .add(button_load_timetable)
+
+kb_category = InlineKeyboardMarkup().add(InlineKeyboardButton('Хлеб🍞', callback_data='bread')). \
+    add(InlineKeyboardButton('Булочки🍪', callback_data='buns')). \
+    add(InlineKeyboardButton('Прочее❓', callback_data='other'))
