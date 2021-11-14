@@ -39,7 +39,7 @@ async def sql_add_product_in_buns(state):
 
 
 async def sql_add_product_in_other(state):
-    """Функция добавления новой продукта в категорию 'Прочее'"""
+    """Функция добавления нового продукта в категорию 'Прочее'"""
     async with state.proxy() as data:
         cur.execute('INSERT INTO other VALUES (?, ?, ?, ?)', tuple(data.values()))
         base.commit()
@@ -57,3 +57,8 @@ async def sql_add_new_item_in_timetable(state):
     async with state.proxy() as data:
         cur.execute('INSERT INTO timetable VALUES (?,)', tuple(data.values()))
         base.commit()
+
+
+async def sql_loads_all_breads():
+    """Возвращает все продукты из категории хлеб которые есть в бд"""
+    return cur.execute('SELECT * FROM bread').fetchall()
