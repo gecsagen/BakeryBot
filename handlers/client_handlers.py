@@ -16,9 +16,15 @@ async def load_address(message: types.Message):
     await message.answer_location(57.148317, 73.436807)
 
 
+async def load_contacts(message: types.Message):
+    """Хендлер для отображения контактов пекарни"""
+    await message.answer_contact(phone_number='79236976982', first_name='Роман')
+
+
 def register_handlers_client(dp: Dispatcher):
     """
         Функция регистратор клиентских диспетчеров, вызывается из main.py
     """
     dp.register_message_handler(commands_start, commands=['start', 'help'])
     dp.register_message_handler(load_address, Text(startswith='Адрес'))
+    dp.register_message_handler(load_contacts, Text(startswith='Контакты'))
