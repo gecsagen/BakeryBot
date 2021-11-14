@@ -53,12 +53,21 @@ async def callback_add_new_product(callback_query: types.CallbackQuery, state: F
 
 
 async def load_photo(message: types.Message, state: FSMContext):
-    """Ловит фото пиццы и пишет ссылку на фото в словарь"""
+    """Ловит фото продукта"""
     if str(message.from_user.id) in admins:
         async with state.proxy() as data:
             data['photo'] = message.photo[0].file_id
         await FSMProduct.next()
         await message.reply('Теперь введите название')
+
+
+async def load_name(message: types.Message, state: FSMContext):
+    """Ловит название продукта"""
+    if str(message.from_user.id) in admins:
+        async with state.proxy() as data:
+            data['name'] = message.text
+        await FSMProduct.next()
+        await message.reply('Введи описание')
 
 
 def register_handlers_admin(dp: Dispatcher):
@@ -71,3 +80,4 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_callback_query_handler(callback_add_new_product,
                                        lambda x: x.data == 'bread' or x.data == 'buns' or x.data == 'other')
     dp.register_message_handler(load_photo, content_types=['photo'], state=FSMProduct.photo)
+    dp.register_message_handler(load_name, state=FSMProduct.name)
