@@ -67,3 +67,8 @@ async def sql_loads_all_breads():
 async def sql_loads_all_buns():
     """Возвращает все продукты из категории булочки которые есть в бд"""
     return cur.execute('SELECT * FROM buns').fetchall()
+
+
+async def sql_loads_all_other():
+    """Возвращает все продукты из категории прочее которые есть в бд"""
+    return cur.execute('SELECT * FROM other').fetchall()
