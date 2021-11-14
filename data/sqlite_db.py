@@ -77,3 +77,8 @@ async def sql_loads_all_other():
 async def sql_loads_all_gallery():
     """Возвращает все значения из галереи которые есть в бд"""
     return cur.execute('SELECT * FROM gallery').fetchall()
+
+
+async def sql_loads_last_timetable():
+    """Возвращает актуальное расписание из бд"""
+    return cur.execute('SELECT * FROM gallery').fetchall()
