@@ -70,6 +70,15 @@ async def load_name(message: types.Message, state: FSMContext):
         await message.reply('Введи описание')
 
 
+async def load_description(message: types.Message, state: FSMContext):
+    """Ловит описание продукта"""
+    if str(message.from_user.id) in admins:
+        async with state.proxy() as data:
+            data['description'] = message.text
+        await FSMProduct.next()
+        await message.reply('Теперь укажи цену')
+
+
 def register_handlers_admin(dp: Dispatcher):
     """
         Функция регистратор админских диспетчеров, вызывается из main.py
@@ -81,3 +90,4 @@ def register_handlers_admin(dp: Dispatcher):
                                        lambda x: x.data == 'bread' or x.data == 'buns' or x.data == 'other')
     dp.register_message_handler(load_photo, content_types=['photo'], state=FSMProduct.photo)
     dp.register_message_handler(load_name, state=FSMProduct.name)
+    dp.register_message_handler(load_description, state=FSMProduct.description)
