@@ -72,3 +72,8 @@ async def sql_loads_all_buns():
 async def sql_loads_all_other():
     """Возвращает все продукты из категории прочее которые есть в бд"""
     return cur.execute('SELECT * FROM other').fetchall()
+
+
+async def sql_loads_all_gallery():
+    """Возвращает все значения из галереи которые есть в бд"""
+    return cur.execute('SELECT * FROM gallery').fetchall()
