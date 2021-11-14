@@ -14,7 +14,7 @@ async def on_startup(_):
 
 #  запускаем функции регистрации хендлеров
 client_handlers.register_handlers_client(dp)
-client_handlers.register_handlers_admin(dp)
+# client_handlers.register_handlers_admin(dp)
 
 #  запуск бота в режиме polling
 if __name__ == '__main__':
