@@ -43,3 +43,10 @@ async def sql_add_product_in_other(state):
     async with state.proxy() as data:
         cur.execute('INSERT INTO other VALUES (?, ?, ?, ?)', tuple(data.values()))
         base.commit()
+
+
+async def sql_add_new_item_in_gallery(state):
+    """Функция добавления новой картинки в галерею"""
+    async with state.proxy() as data:
+        cur.execute('INSERT INTO other VALUES (?, ?)', tuple(data.values()))
+        base.commit()
