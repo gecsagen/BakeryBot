@@ -29,3 +29,10 @@ async def sql_add_product_in_bread(state):
     async with state.proxy() as data:
         cur.execute('INSERT INTO bread VALUES (?, ?, ?, ?)', tuple(data.values()))
         base.commit()
+
+
+async def sql_add_product_in_buns(state):
+    """Функция добавления новой продукта в категорию 'Булочки'"""
+    async with state.proxy() as data:
+        cur.execute('INSERT INTO buns VALUES (?, ?, ?, ?)', tuple(data.values()))
+        base.commit()
