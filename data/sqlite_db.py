@@ -62,3 +62,8 @@ async def sql_add_new_item_in_timetable(state):
 async def sql_loads_all_breads():
     """Возвращает все продукты из категории хлеб которые есть в бд"""
     return cur.execute('SELECT * FROM bread').fetchall()
+
+
+async def sql_loads_all_buns():
+    """Возвращает все продукты из категории булочки которые есть в бд"""
+    return cur.execute('SELECT * FROM buns').fetchall()
