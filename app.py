@@ -2,6 +2,7 @@ import logging
 from loader import dp
 from aiogram.utils import executor
 from handlers import client_handlers, admin_handlers
+from data import sqlite_db
 
 # настройка логирования бота
 logging.basicConfig(level=logging.DEBUG)
@@ -10,6 +11,8 @@ logging.basicConfig(level=logging.DEBUG)
 async def on_startup(_):
     """Выполняется самой первой при запуске бота"""
     print('Бот вышел в онлайн!')
+    #  подключение к БД бота
+    sqlite_db.sql_start()
 
 
 #  запускаем функции регистрации хендлеров
