@@ -6,6 +6,7 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
 from loader import bot
+from data import sqlite_db
 
 
 class FSMProduct(StatesGroup):
@@ -86,7 +87,7 @@ async def load_price(message: types.Message, state: FSMContext):
         async with state.proxy() as data:
             data['price'] = float(message.text)
         #  вызываем функцию сохранения данных в БД
-        await message.answer(data)
+        await sqlite_db.sql_add_product(state)
         await state.finish()
 
 
