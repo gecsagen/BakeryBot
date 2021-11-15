@@ -18,6 +18,12 @@ class FSMProduct(StatesGroup):
     price = State()  # состояние для цены
 
 
+class FSMGallery(StatesGroup):
+    """Класс машины состояний для добавления в галерею"""
+    photo = State()  # состояние для фотографии
+    description = State()  # состояние для описания
+
+
 async def cm_start(message: types.Message):
     """Отправляет админское меню администратору"""
     if str(message.from_user.id) in admins:
@@ -82,12 +88,39 @@ async def load_description(message: types.Message, state: FSMContext):
 
 
 async def load_price(message: types.Message, state: FSMContext):
-    """Ловит описание пиццы от админа"""
+    """Ловит цену продукта"""
     if str(message.from_user.id) in admins:
         async with state.proxy() as data:
             data['price'] = float(message.text)
         #  вызываем функцию сохранения данных в БД
         await sqlite_db.sql_add_product(state)
+        await message.answer('Продукт успешно добавлен!')
+        await state.finish()
+
+
+async def add_item_gallery(message: types.Message):
+    """Запускает процесс добавления новой фото в БД"""
+    if str(message.from_user.id) in admins:
+        await FSMGallery.photo.set()
+        await message.reply('Отправьте, фото⬇')
+
+
+async def load_photo_gallery(message: types.Message, state: FSMContext):
+    """Ловит фото продукта"""
+    if str(message.from_user.id) in admins:
+        async with state.proxy() as data:
+            data['photo'] = message.photo[0].file_id
+        await FSMGallery.next()
+        await message.reply('Теперь введите описание⬇️')
+
+
+async def load_description_gallery(message: types.Message, state: FSMContext):
+    """Ловит описание для фото из галереи"""
+    if str(message.from_user.id) in admins:
+        async with state.proxy() as data:
+            data['description'] = message.text
+        await sqlite_db.sql_add_new_item_in_gallery(state)
+        await message.answer('Фото добавлено в галерею')
         await state.finish()
 
 
@@ -105,3 +138,6 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(load_name, state=FSMProduct.name)
     dp.register_message_handler(load_description, state=FSMProduct.description)
     dp.register_message_handler(load_price, state=FSMProduct.price)
+    dp.register_message_handler(add_item_gallery, Text(startswith=['Добавить в галерею']), state=None)
+    dp.register_message_handler(load_photo_gallery, content_types=['photo'], state=FSMGallery.photo)
+    dp.register_message_handler(load_description_gallery, state=FSMGallery.description)
