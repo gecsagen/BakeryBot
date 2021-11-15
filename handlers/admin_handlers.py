@@ -143,10 +143,25 @@ async def delete_item_gallery(message: types.Message):
 
 #  ----------------------------------------------------------------------------------------------------------------------
 
+
 async def delete_product(message: types.Message):
     """Хендлер для команды удалить продукт"""
     if str(message.from_user.id) in admins:
         await message.reply('Выберите пожалуйста категорию⬇️', reply_markup=kb_category_for_del_product)
+
+
+async def show_all_products_from_category_for_del(callback_query: types.CallbackQuery):
+    """
+        Хендлер для отображения всех продуктов из выбранной
+        категории, с кнойкой 'удалить' под каждым продуктом
+    """
+    global category_del_product
+    category_del_product = callback_query.data.replace('choice_category ', '')
+    read = await sqlite_db.sql_loads_all_products_from_category(category_del_product)
+    for ret in read:
+        await bot.send_photo(callback_query.from_user.id, ret[0], f'{ret[1]}\nОписание: {ret[2]}\nЦена {ret[-1]}')
+        await bot.send_message(callback_query.from_user.id, text='⬇⬇⬇', reply_markup=InlineKeyboardMarkup().add(
+            InlineKeyboardButton(f'Удалить {ret[1]}', callback_data=f'del_product {ret[1]}')))
 
 
 #  ----------------------------------------------------------------------------------------------------------------------
@@ -170,3 +185,5 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_callback_query_handler(callback_del_gallery, lambda x: x.data.startswith('del '))
     dp.register_message_handler(delete_item_gallery, Text(startswith=['Удалить из галереи']))
     dp.register_message_handler(delete_product, Text(startswith=['Удалить продукт']))
+    dp.register_callback_query_handler(show_all_products_from_category_for_del,
+                                       lambda x: x.data.startswith('choice_category'))
