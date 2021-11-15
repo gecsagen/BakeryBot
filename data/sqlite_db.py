@@ -88,7 +88,7 @@ async def sql_delete_other(data):
     base.commit()
 
 
-async def sql_delete_from_gallery(img):
+async def sql_delete_from_gallery(description):
     """Удаление элемента из галереи"""
-    cur.execute('DELETE FROM gallery WHERE name == ?', (img,))
+    cur.execute('DELETE FROM gallery WHERE description == ?', (description,))
     base.commit()

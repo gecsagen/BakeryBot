@@ -7,6 +7,7 @@ from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
 from loader import bot
 from data import sqlite_db
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
 class FSMProduct(StatesGroup):
@@ -53,7 +54,6 @@ async def callback_add_new_product(callback_query: types.CallbackQuery, state: F
     """Функция для выяснения в какую категорию вносить изменения"""
     global category
     category = callback_query.data
-    print(category)
     async with state.proxy() as data:
         data['category'] = category
     await FSMProduct.next()
@@ -124,6 +124,23 @@ async def load_description_gallery(message: types.Message, state: FSMContext):
         await state.finish()
 
 
+async def callback_del_gallery(callback_query: types.CallbackQuery):
+    """Функция запускает удаление из галереи"""
+    await bot.send_message(chat_id=callback_query.from_user.id, text=f'{callback_query.data}')
+    await sqlite_db.sql_delete_from_gallery(callback_query.data.replace('del ', ''))
+    await callback_query.answer(text='Запись удалена.', show_alert=True)
+
+
+async def delete_item_gallery(message: types.Message):
+    """Хендлер для команды удалить из галереи"""
+    if str(message.from_user.id) in admins:
+        read = await sqlite_db.sql_loads_all_gallery()
+        for ret in read:
+            await bot.send_photo(message.from_user.id, ret[0], f'{ret[1]}\n')
+            await bot.send_message(message.from_user.id, text='⬇⬇⬇', reply_markup=InlineKeyboardMarkup().add(
+                InlineKeyboardButton('Удалить❌', callback_data=f'del {ret[1]}')))
+
+
 def register_handlers_admin(dp: Dispatcher):
     """
         Функция регистратор админских диспетчеров, вызывается из main.py
@@ -141,3 +158,5 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(add_item_gallery, Text(startswith=['Добавить в галерею']), state=None)
     dp.register_message_handler(load_photo_gallery, content_types=['photo'], state=FSMGallery.photo)
     dp.register_message_handler(load_description_gallery, state=FSMGallery.description)
+    dp.register_callback_query_handler(callback_del_gallery, lambda x: x.data.startswith('del '))
+    dp.register_message_handler(delete_item_gallery, Text(startswith=['Удалить из галереи']))
