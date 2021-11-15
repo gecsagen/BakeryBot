@@ -1,7 +1,7 @@
 """Админские диспетчеры"""
 from aiogram import types, Dispatcher
 from loader import admins
-from keyboards.admin_keyboards import kb_admin, kb_category
+from keyboards.admin_keyboards import kb_admin, kb_category, kb_category_for_del_product
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text
 from aiogram.dispatcher import FSMContext
@@ -141,6 +141,15 @@ async def delete_item_gallery(message: types.Message):
                 InlineKeyboardButton('Удалить❌', callback_data=f'del {ret[1]}')))
 
 
+#  ----------------------------------------------------------------------------------------------------------------------
+
+async def delete_product(message: types.Message):
+    """Хендлер для команды удалить продукт"""
+    if str(message.from_user.id) in admins:
+        await message.reply('Выберите пожалуйста категорию⬇️', reply_markup=kb_category_for_del_product)
+
+
+#  ----------------------------------------------------------------------------------------------------------------------
 def register_handlers_admin(dp: Dispatcher):
     """
         Функция регистратор админских диспетчеров, вызывается из main.py
@@ -160,3 +169,4 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(load_description_gallery, state=FSMGallery.description)
     dp.register_callback_query_handler(callback_del_gallery, lambda x: x.data.startswith('del '))
     dp.register_message_handler(delete_item_gallery, Text(startswith=['Удалить из галереи']))
+    dp.register_message_handler(delete_product, Text(startswith=['Удалить продукт']))

@@ -45,19 +45,9 @@ async def sql_add_new_item_in_timetable(state):
         base.commit()
 
 
-async def sql_loads_all_breads():
+async def sql_loads_all_products_from_category(category):
     """Возвращает все продукты из категории хлеб которые есть в бд"""
-    return cur.execute('SELECT * FROM bread').fetchall()
-
-
-async def sql_loads_all_buns():
-    """Возвращает все продукты из категории булочки которые есть в бд"""
-    return cur.execute('SELECT * FROM buns').fetchall()
-
-
-async def sql_loads_all_other():
-    """Возвращает все продукты из категории прочее которые есть в бд"""
-    return cur.execute('SELECT * FROM other').fetchall()
+    return cur.execute(f'SELECT * FROM {category}').fetchall()
 
 
 async def sql_loads_all_gallery():
@@ -70,21 +60,9 @@ async def sql_loads_last_timetable():
     return cur.execute('SELECT * FROM timetable').fetchall()[-1]
 
 
-async def sql_delete_bread(data):
+async def sql_delete_product(data, category):
     """Удаление хлеба из БД"""
-    cur.execute('DELETE FROM bread WHERE name == ?', (data,))
-    base.commit()
-
-
-async def sql_delete_buns(data):
-    """Удаление булочки из БД"""
-    cur.execute('DELETE FROM buns WHERE name == ?', (data,))
-    base.commit()
-
-
-async def sql_delete_other(data):
-    """Удаление элемента из категории 'прочее' из БД"""
-    cur.execute('DELETE FROM other WHERE name == ?', (data,))
+    cur.execute(f'DELETE FROM {category} WHERE name == ?', (data,))
     base.commit()
 
 
