@@ -164,6 +164,14 @@ async def show_all_products_from_category_for_del(callback_query: types.Callback
             InlineKeyboardButton(f'Удалить {ret[1]}', callback_data=f'del_product {ret[1]}')))
 
 
+async def delete_product_from_database(callback_query: types.CallbackQuery):
+    """Срабатывает на кнопку удалить, и удаляет соответствующий продукт из БД"""
+    data = callback_query.data.replace('del_product ', '')
+    await bot.send_message(callback_query.from_user.id, data)
+    await bot.send_message(callback_query.from_user.id, category_del_product)
+    await sqlite_db.sql_delete_product(data, category_del_product)
+
+
 #  ----------------------------------------------------------------------------------------------------------------------
 def register_handlers_admin(dp: Dispatcher):
     """
@@ -187,3 +195,5 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(delete_product, Text(startswith=['Удалить продукт']))
     dp.register_callback_query_handler(show_all_products_from_category_for_del,
                                        lambda x: x.data.startswith('choice_category'))
+    dp.register_callback_query_handler(delete_product_from_database,
+                                       lambda x: x.data.startswith('del_product'))
