@@ -1,6 +1,6 @@
 """Админские диспетчеры"""
 from aiogram import types, Dispatcher
-from loader import admins
+from data.config import admins
 from keyboards.admin_keyboards import kb_admin, kb_category, kb_category_for_del_product
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.dispatcher.filters import Text

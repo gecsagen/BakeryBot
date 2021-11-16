@@ -4,6 +4,7 @@ from keyboards import client_keyboards
 from aiogram.dispatcher.filters import Text
 from data import sqlite_db
 from loader import bot
+from data.config import address, phones, email, names
 
 
 async def commands_start(message: types.Message):
@@ -14,15 +15,15 @@ async def commands_start(message: types.Message):
 
 async def load_address(message: types.Message):
     """Хендлер для отображения адреса пекарни"""
-    await message.reply('Омская обл, Знаменский Р-н, с.Завьялово, ул.Комарова 27')
-    await message.answer_location(57.145900, 73.441299)
+    await message.reply(address[0])
+    await message.answer_location(float(address[1]), float(address[2]))
 
 
 async def load_contacts(message: types.Message):
     """Хендлер для отображения контактов пекарни"""
-    await message.answer_contact(phone_number='79236976982', first_name='Роман')
-    await message.answer_contact(phone_number='79236976983', first_name='Иван')
-    await message.answer('ouremail@gmail.com')
+    for name, phone in zip(names, phones):
+        await message.answer_contact(phone_number=phone, first_name=name)
+    await message.answer(email)
 
 
 async def show_products(message: types.Message):
