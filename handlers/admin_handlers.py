@@ -10,6 +10,7 @@ from data import sqlite_db
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 
+#  Классы машин состояний ----------------------------------------------------------------------------------------------
 class FSMProduct(StatesGroup):
     """Класс машины состояний для добавления товаров"""
     category = State()  # состояние для категории
@@ -30,6 +31,7 @@ class FSMTimetable(StatesGroup):
     photo = State()  # состояние для фотографии
 
 
+#  Отправка адмнского меню и выход из МС--------------------------------------------------------------------------------
 async def cm_start(message: types.Message):
     """Отправляет админское меню администратору"""
     if str(message.from_user.id) in admins:
@@ -48,6 +50,7 @@ async def cancel_handler(message: types.Message, state: FSMContext):
         await message.reply('Вы отменили действие')
 
 
+#  Добавление нового продукта в категорию-------------------------------------------------------------------------------
 async def add_new_product(message: types.Message):
     """Запускает процесс добавления нового товара в БД"""
     if str(message.from_user.id) in admins:
@@ -103,6 +106,7 @@ async def load_price(message: types.Message, state: FSMContext):
         await state.finish()
 
 
+#  Добавление нового фото и описания в галерею--------------------------------------------------------------------------
 async def add_item_gallery(message: types.Message):
     """Запускает процесс добавления новой фото в БД"""
     if str(message.from_user.id) in admins:
@@ -129,6 +133,7 @@ async def load_description_gallery(message: types.Message, state: FSMContext):
         await state.finish()
 
 
+#  Реализация удаления из галереи---------------------------------------------------------------------------------------
 async def callback_del_gallery(callback_query: types.CallbackQuery):
     """Функция запускает удаление из галереи"""
     await bot.send_message(chat_id=callback_query.from_user.id, text=f'{callback_query.data}')
@@ -146,9 +151,7 @@ async def delete_item_gallery(message: types.Message):
                 InlineKeyboardButton('Удалить❌', callback_data=f'del {ret[1]}')))
 
 
-#  ----------------------------------------------------------------------------------------------------------------------
-
-
+#  Реализация удаления продукта-----------------------------------------------------------------------------------------
 async def delete_product(message: types.Message):
     """Хендлер для команды удалить продукт"""
     if str(message.from_user.id) in admins:
@@ -177,9 +180,7 @@ async def delete_product_from_database(callback_query: types.CallbackQuery):
     await sqlite_db.sql_delete_product(data, category_del_product)
 
 
-#  ----------------------------------------------------------------------------------------------------------------------
-
-
+#  Загррузка нового расписания------------------------------------------------------------------------------------------
 async def add_new_timetable(message: types.Message):
     """Хендлер для команды 'Загрузить расписание'"""
     if str(message.from_user.id) in admins:
@@ -197,8 +198,7 @@ async def load_photo_timetable(message: types.Message, state: FSMContext):
         await state.finish()
 
 
-#  ----------------------------------------------------------------------------------------------------------------------
-
+#  Регистрация хендлеров------------------------------------------------------------------------------------------------
 def register_handlers_admin(dp: Dispatcher):
     """
         Функция регистратор админских диспетчеров, вызывается из main.py
