@@ -38,6 +38,13 @@ async def show_all_products_from_category(callback_query: types.CallbackQuery):
         await bot.send_photo(callback_query.from_user.id, ret[0], f'{ret[1]}\nОписание: {ret[2]}\nЦена {ret[-1]}')
 
 
+async def show_all_photos_from_gallery(message: types.Message):
+    """Хендлер для кнопки 'Галерея', отображает все фото из галереи"""
+    read = await sqlite_db.sql_loads_all_gallery()
+    for ret in read:
+        await bot.send_photo(message.from_user.id, ret[0], f'{ret[1]}\n')
+
+
 def register_handlers_client(dp: Dispatcher):
     """
         Функция регистратор клиентских диспетчеров, вызывается из main.py
@@ -47,3 +54,4 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(load_contacts, Text(startswith='Контакты'))
     dp.register_message_handler(show_products, Text(startswith='Продукция'))
     dp.register_callback_query_handler(show_all_products_from_category, lambda x: x.data.startswith('show'))
+    dp.register_message_handler(show_all_photos_from_gallery, Text(startswith='Галерея'))
