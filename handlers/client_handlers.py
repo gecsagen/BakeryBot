@@ -23,6 +23,11 @@ async def load_contacts(message: types.Message):
     await message.answer('ouremail@gmail.com')
 
 
+async def show_products(message: types.Message):
+    """Хендлер для команды 'продукция' отображает категории продукции"""
+    await message.reply('Выберите пожалуйста категорию⬇️', reply_markup=client_keyboards.kb_category_for_show)
+
+
 def register_handlers_client(dp: Dispatcher):
     """
         Функция регистратор клиентских диспетчеров, вызывается из main.py
@@ -30,3 +35,4 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(commands_start, commands=['start', 'help'])
     dp.register_message_handler(load_address, Text(startswith='Адрес'))
     dp.register_message_handler(load_contacts, Text(startswith='Контакты'))
+    dp.register_message_handler(show_products, Text(startswith='Продукция'))
