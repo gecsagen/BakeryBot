@@ -25,6 +25,11 @@ class FSMGallery(StatesGroup):
     description = State()  # состояние для описания
 
 
+class FSMTimetable(StatesGroup):
+    """Класс машинны состояний для загрузки расписания"""
+    photo = State()  # состояние для фотографии
+
+
 async def cm_start(message: types.Message):
     """Отправляет админское меню администратору"""
     if str(message.from_user.id) in admins:
@@ -173,6 +178,27 @@ async def delete_product_from_database(callback_query: types.CallbackQuery):
 
 
 #  ----------------------------------------------------------------------------------------------------------------------
+
+
+async def add_new_timetable(message: types.Message):
+    """Хендлер для команды 'Загрузить расписание'"""
+    if str(message.from_user.id) in admins:
+        await FSMTimetable.photo.set()
+        await message.reply('Загрузите фото расписания⬇️')
+
+
+async def load_photo_timetable(message: types.Message, state: FSMContext):
+    """Ловит фото продукта"""
+    if str(message.from_user.id) in admins:
+        async with state.proxy() as data:
+            data['photo'] = message.photo[0].file_id
+        await sqlite_db.sql_add_new_item_in_timetable(state)
+        await message.answer('Расписание успешно загружено!')
+        await state.finish()
+
+
+#  ----------------------------------------------------------------------------------------------------------------------
+
 def register_handlers_admin(dp: Dispatcher):
     """
         Функция регистратор админских диспетчеров, вызывается из main.py
@@ -197,3 +223,5 @@ def register_handlers_admin(dp: Dispatcher):
                                        lambda x: x.data.startswith('choice_category'))
     dp.register_callback_query_handler(delete_product_from_database,
                                        lambda x: x.data.startswith('del_product'))
+    dp.register_message_handler(add_new_timetable, Text(startswith=['Загрузить расписание']), state=None)
+    dp.register_message_handler(load_photo_timetable, content_types=['photo'], state=FSMTimetable.photo)

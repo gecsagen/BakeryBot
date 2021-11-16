@@ -41,7 +41,7 @@ async def sql_add_new_item_in_gallery(state):
 async def sql_add_new_item_in_timetable(state):
     """Функция добавления нового расписания"""
     async with state.proxy() as data:
-        cur.execute('INSERT INTO timetable VALUES (?,)', tuple(data.values()))
+        cur.execute('INSERT INTO timetable VALUES (?)', tuple(data.values()))
         base.commit()
 
 
